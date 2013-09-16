@@ -42,81 +42,73 @@ public class GameTests {
 	
 	@Test
 	public void playing_three_in_the_first_horizontal_row_wins_the_game() throws Exception {
-		game.play(Position.TopLeftCorner, Mark.X);
-		game.play(Position.BottonLeftCorner, Mark.O);
-		game.play(Position.TopEdge, Mark.X);
-		game.play(Position.BottonEdge, Mark.O);
-		game.play(Position.TopRightCorner, Mark.X);
+		playInSequence(Position.TopLeftCorner, Position.BottonLeftCorner, 
+					   Position.TopEdge, Position.BottonEdge, 
+					   Position.TopRightCorner);
 		assertTrue(game.isOver());
 	}
 	
 	@Test
 	public void playing_three_in_the_second_horizontal_row_wins_the_game() throws Exception {
-		game.play(Position.LeftEdge, Mark.X);
-		game.play(Position.BottonLeftCorner, Mark.O);
-		game.play(Position.Center, Mark.X);
-		game.play(Position.BottonEdge, Mark.O);
-		game.play(Position.RightEdge, Mark.X);
+		playInSequence(Position.LeftEdge, Position.BottonLeftCorner, 
+				       Position.Center, Position.BottonEdge, 
+				       Position.RightEdge);
 		assertTrue(game.isOver());
 	}
 	
 	@Test
 	public void playing_three_in_the_third_horizontal_row_wins_the_game() throws Exception {
-		game.play(Position.BottonLeftCorner, Mark.X);
-		game.play(Position.TopLeftCorner, Mark.O);
-		game.play(Position.BottonEdge, Mark.X);
-		game.play(Position.TopEdge, Mark.O);
-		game.play(Position.BottonRightCorner, Mark.X);
+		playInSequence(Position.BottonLeftCorner, Position.TopLeftCorner, 
+					   Position.BottonEdge, Position.TopEdge, 
+					   Position.BottonRightCorner);
 		assertTrue(game.isOver());
 	}
 	
 	@Test
 	public void playing_three_in_the_first_vertical_row_wins_the_game() throws Exception {
-		game.play(Position.TopLeftCorner, Mark.X);
-		game.play(Position.TopRightCorner, Mark.O);
-		game.play(Position.LeftEdge, Mark.X);
-		game.play(Position.RightEdge, Mark.O);
-		game.play(Position.BottonLeftCorner, Mark.X);
+		playInSequence(Position.TopLeftCorner, Position.TopRightCorner, 
+					   Position.LeftEdge, Position.RightEdge, 
+					   Position.BottonLeftCorner);
 		assertTrue(game.isOver());
 	}
 	
 	@Test
 	public void playing_three_in_the_second_vertical_row_wins_the_game() throws Exception {
-		game.play(Position.TopEdge, Mark.X);
-		game.play(Position.TopRightCorner, Mark.O);
-		game.play(Position.Center, Mark.X);
-		game.play(Position.RightEdge, Mark.O);
-		game.play(Position.BottonEdge, Mark.X);
+		playInSequence(Position.TopEdge, Position.TopRightCorner, 
+				       Position.Center, Position.RightEdge, 
+				       Position.BottonEdge);
 		assertTrue(game.isOver());
 	}
 	
 	@Test
 	public void playing_three_in_the_third_vertical_row_wins_the_game() throws Exception {
-		game.play(Position.TopRightCorner, Mark.X);
-		game.play(Position.TopLeftCorner, Mark.O);
-		game.play(Position.RightEdge, Mark.X);
-		game.play(Position.LeftEdge, Mark.O);
-		game.play(Position.BottonRightCorner, Mark.X);
+		playInSequence(Position.TopRightCorner, Position.TopLeftCorner, 
+				       Position.RightEdge, Position.LeftEdge,  
+				       Position.BottonRightCorner);
 		assertTrue(game.isOver());
 	}
 	
 	@Test
 	public void playing_three_in_the_first_diagonal_row_wins_the_game() throws Exception {
-		game.play(Position.TopLeftCorner, Mark.X);
-		game.play(Position.LeftEdge, Mark.O);
-		game.play(Position.Center, Mark.X);
-		game.play(Position.RightEdge, Mark.O);
-		game.play(Position.BottonRightCorner, Mark.X);
+		playInSequence(Position.TopLeftCorner, Position.LeftEdge, 
+					   Position.Center, Position.RightEdge,
+					   Position.BottonRightCorner);
 		assertTrue(game.isOver());
 	}
 	
 	@Test
 	public void playing_three_in_the_second_diagonal_row_wins_the_game() throws Exception {
-		game.play(Position.TopRightCorner, Mark.X);
-		game.play(Position.LeftEdge, Mark.O);
-		game.play(Position.Center, Mark.X);
-		game.play(Position.RightEdge, Mark.O);
-		game.play(Position.BottonLeftCorner, Mark.X);
+		playInSequence(Position.TopRightCorner, Position.LeftEdge, 
+				       Position.Center, Position.RightEdge, 
+				       Position.BottonLeftCorner);
 		assertTrue(game.isOver());
+	}
+	
+	private void playInSequence(Position... positions) {
+		Mark mark = Mark.X;
+		for (Position position : positions) {
+			game.play(position, mark);
+			mark = mark.switchMark();
+		}
 	}
 }

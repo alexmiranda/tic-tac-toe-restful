@@ -52,13 +52,13 @@ public class Game {
 
 	private void validate(Position position, Mark mark) {
 		if (this.isOver()) {
-			throw new BadMoveException();
+			throw new GameOverException();
 		}
 		if (isFilled(position)) {
-			throw new BadMoveException();
+			throw new FilledPositionException();
 		}
 		if (lastMove.sameMark(mark)) {
-			throw new BadMoveException();
+			throw new InvalidPlayerException();
 		}
 	}
 

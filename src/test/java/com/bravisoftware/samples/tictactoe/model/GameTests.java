@@ -21,19 +21,19 @@ public class GameTests {
 		assertTrue(lastMove.is(Position.TopLeftCorner, Mark.X));
 	}
 	
-	@Test(expected = BadMoveException.class)
+	@Test(expected = InvalidPlayerException.class)
 	public void cannot_play_the_same_mark_again() throws Exception {
 		game.play(Position.TopLeftCorner, Mark.X);
 		game.play(Position.Center, Mark.X);
 	}
 	
-	@Test(expected = BadMoveException.class)
+	@Test(expected = FilledPositionException.class)
 	public void cannot_play_in_the_same_last_position() throws Exception {
 		game.play(Position.TopLeftCorner, Mark.X);
 		game.play(Position.TopLeftCorner, Mark.O);
 	}
 	
-	@Test(expected = BadMoveException.class)
+	@Test(expected = FilledPositionException.class)
 	public void cannot_play_in_a_filled_position() throws Exception {
 		game.play(Position.TopLeftCorner, Mark.X);
 		game.play(Position.Center, Mark.O);
@@ -104,7 +104,7 @@ public class GameTests {
 		assertTrue(game.isOver());
 	}
 	
-	@Test(expected = BadMoveException.class)
+	@Test(expected = GameOverException.class)
 	public void cannot_play_when_game_is_over() throws Exception {
 		playInSequence(Position.TopRightCorner, Position.LeftEdge, 
 			       Position.Center, Position.RightEdge, 

@@ -12,8 +12,8 @@ public class Move {
 		this.mark = mark;
 	}
 
-	public boolean is(Position topleftcorner, Mark x) {
-		return true;
+	public boolean is(Position position, Mark mark) {
+		return samePosition(position) && sameMark(mark);
 	}
 	
 	public boolean samePosition(Position position) {
@@ -31,7 +31,7 @@ public class Move {
 		}
 		
 		@Override
-		public boolean is(Position topleftcorner, Mark x) {
+		public boolean is(Position position, Mark x) {
 			return false;
 		}
 		

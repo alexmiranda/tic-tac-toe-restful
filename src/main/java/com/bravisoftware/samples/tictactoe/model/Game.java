@@ -57,7 +57,7 @@ public class Game {
 		if (isFilled(position)) {
 			throw new BadMoveException();
 		}
-		if (lastMove.samePosition(position) || lastMove.sameMark(mark)) {
+		if (lastMove.sameMark(mark)) {
 			throw new BadMoveException();
 		}
 	}

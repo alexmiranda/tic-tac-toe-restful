@@ -14,12 +14,34 @@ public class Game {
 	}
 
 	private void checkWinnerAndChangeStatus() {
+		checkHorizontalRows();
+		checkVerticalRows();
+	}
+
+	private void checkHorizontalRows() {
 		for (int i = 0; i < grid.length; i = i + 3) {
-			if (grid[i] == grid[i + 1] && grid[i + 1] == grid[i + 2]) {
-				over = true;
+			if (check(i, i + 1, i + 2)) {
 				break;
 			}
 		}
+	}
+	
+	private void checkVerticalRows() {
+		for (int i = 0; i <= 2; i++) {
+			if (check(i, i + 3, i + 6)) {
+				break;
+			}
+		}
+	}
+
+	private boolean check(int first, int second, int third) {
+		if (!isFilled(first) || !isFilled(second) || !isFilled(third)) {
+			return false;
+		}
+		if (grid[first] == grid[second] && grid[second] == grid[third]) {
+			over = true;
+		}
+		return over;
 	}
 
 	private void validate(Position position, Mark mark) {
@@ -32,7 +54,11 @@ public class Game {
 	}
 
 	private boolean isFilled(Position position) {
-		return grid[position.index()] != null;
+		return isFilled(position.index());
+	}
+	
+	private boolean isFilled(int position) {
+		return grid[position] != null;
 	}
 
 	public Move lastMove() {

@@ -99,4 +99,24 @@ public class GameTests {
 		game.play(Position.BottonRightCorner, Mark.X);
 		assertTrue(game.isOver());
 	}
+	
+	@Test
+	public void playing_three_in_the_first_diagonal_row_wins_the_game() throws Exception {
+		game.play(Position.TopLeftCorner, Mark.X);
+		game.play(Position.LeftEdge, Mark.O);
+		game.play(Position.Center, Mark.X);
+		game.play(Position.RightEdge, Mark.O);
+		game.play(Position.BottonRightCorner, Mark.X);
+		assertTrue(game.isOver());
+	}
+	
+	@Test
+	public void playing_three_in_the_second_diagonal_row_wins_the_game() throws Exception {
+		game.play(Position.TopRightCorner, Mark.X);
+		game.play(Position.LeftEdge, Mark.O);
+		game.play(Position.Center, Mark.X);
+		game.play(Position.RightEdge, Mark.O);
+		game.play(Position.BottonLeftCorner, Mark.X);
+		assertTrue(game.isOver());
+	}
 }

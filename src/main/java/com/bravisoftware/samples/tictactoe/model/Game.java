@@ -16,6 +16,7 @@ public class Game {
 	private void checkWinnerAndChangeStatus() {
 		checkHorizontalRows();
 		checkVerticalRows();
+		checkDiagonalRows();
 	}
 
 	private void checkHorizontalRows() {
@@ -32,6 +33,11 @@ public class Game {
 				break;
 			}
 		}
+	}
+	
+	private void checkDiagonalRows() {
+		check(0, 4, 8);
+		check(2, 4, 6);
 	}
 
 	private boolean check(int first, int second, int third) {

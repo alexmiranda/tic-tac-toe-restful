@@ -51,6 +51,9 @@ public class Game {
 	}
 
 	private void validate(Position position, Mark mark) {
+		if (this.isOver()) {
+			throw new BadMoveException();
+		}
 		if (isFilled(position)) {
 			throw new BadMoveException();
 		}

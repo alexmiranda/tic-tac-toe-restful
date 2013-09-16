@@ -104,6 +104,14 @@ public class GameTests {
 		assertTrue(game.isOver());
 	}
 	
+	@Test(expected = BadMoveException.class)
+	public void cannot_play_when_game_is_over() throws Exception {
+		playInSequence(Position.TopRightCorner, Position.LeftEdge, 
+			       Position.Center, Position.RightEdge, 
+			       Position.BottonLeftCorner);
+		game.play(Position.TopLeftCorner, Mark.O);
+	}
+	
 	private void playInSequence(Position... positions) {
 		Mark mark = Mark.X;
 		for (Position position : positions) {

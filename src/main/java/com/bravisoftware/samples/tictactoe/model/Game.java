@@ -3,12 +3,23 @@ package com.bravisoftware.samples.tictactoe.model;
 public class Game {
 	
 	private Move lastMove = Move.EMPTY;
-	private Move [] moves = new Move[9];	
+	private Mark [] grid = new Mark[9];	
+	private boolean over;
 
 	public void play(Position position, Mark mark) {
 		validate(position, mark);
 		lastMove = new Move(position, mark);
-		moves[position.index()] = lastMove;
+		grid[position.index()] = mark;
+		checkWinnerAndChangeStatus();
+	}
+
+	private void checkWinnerAndChangeStatus() {
+		for (int i = 0; i < grid.length; i = i + 3) {
+			if (grid[i] == grid[i + 1] && grid[i + 1] == grid[i + 2]) {
+				over = true;
+				break;
+			}
+		}
 	}
 
 	private void validate(Position position, Mark mark) {
@@ -21,11 +32,15 @@ public class Game {
 	}
 
 	private boolean isFilled(Position position) {
-		return moves[position.index()] != null;
+		return grid[position.index()] != null;
 	}
 
 	public Move lastMove() {
 		return lastMove;
+	}
+
+	public boolean isOver() {
+		return over;
 	}
 
 }

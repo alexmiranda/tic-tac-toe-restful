@@ -30,7 +30,9 @@
 
 		<!-- Test -->
 		<junit.version>4.11</junit.version>
-
+		
+		<!-- Sonar -->
+		<sonar.language>java</sonar.language>
 	</properties>
 	
 	<build>
@@ -49,6 +51,11 @@
 						<include>**/*Tests.java</include>
 					</includes>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>sonar-maven-plugin</artifactId>
+				<version>2.1</version>
 			</plugin>
 		</plugins>
 	</build>

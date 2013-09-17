@@ -116,19 +116,13 @@ public class GameTests {
 	
 	@Test(expected = GameOverException.class)
 	public void cannot_play_when_game_is_over() throws Exception {
-		playInSequence(Position.TopRightCorner, Position.LeftEdge, 
-			       Position.Center, Position.RightEdge, 
-			       Position.BottonLeftCorner);
+		completeGameWithWinner(Mark.X);
 		game.play(Position.TopLeftCorner, Mark.O);
 	}
 	
 	@Test
 	public void game_is_over_when_there_is_no_blank_positions() throws Exception {
-		playInSequence(Position.TopLeftCorner, Position.Center,
-					   Position.TopRightCorner, Position.TopEdge, 
-					   Position.BottonEdge, Position.LeftEdge, 
-					   Position.RightEdge, Position.BottonRightCorner, 
-					   Position.BottonLeftCorner);
+		completeGameWithDraw();
 		assertTrue(game.isOver());
 		assertThat(game.getResult(), equalTo(GameResult.DRAW));
 	}
@@ -160,12 +154,25 @@ public class GameTests {
 	
 	@Test(expected = GameOverException.class)
 	public void should_not_be_able_undo_when_game_is_over() throws Exception {
+		completeGameWithDraw();
+		game.undo();
+	}
+	
+	private void completeGameWithDraw() {
 		playInSequence(Position.TopLeftCorner, Position.Center,
 				   Position.TopRightCorner, Position.TopEdge, 
 				   Position.BottonEdge, Position.LeftEdge, 
-				   Position.RightEdge, Position.BottonRightCorner, 
-				   Position.BottonLeftCorner);
-		game.undo();
+				   Position.RightEdge, Position.BottonRightCorner,
+				   Position.BottonLeftCorner);		
+	}
+	
+	private void completeGameWithWinner(Mark expectedWinner) {
+		playInSequence(expectedWinner, 
+				   Position.TopLeftCorner, Position.Center,
+				   Position.TopRightCorner, Position.TopEdge, 
+				   Position.BottonEdge, Position.LeftEdge, 
+				   Position.RightEdge, Position.BottonLeftCorner, 
+				   Position.BottonRightCorner);
 	}
 	
 	private void playInSequence(Position... positions) {

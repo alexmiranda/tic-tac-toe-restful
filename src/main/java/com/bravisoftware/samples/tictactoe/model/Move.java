@@ -24,6 +24,10 @@ public class Move {
 		return this.mark == mark;
 	}
 	
+	public int positionIndex() {
+		return position.index();
+	}
+	
 	private static class EmptyMove extends Move {
 
 		public EmptyMove() {

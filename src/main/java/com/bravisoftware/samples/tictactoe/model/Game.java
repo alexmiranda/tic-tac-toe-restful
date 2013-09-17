@@ -1,19 +1,22 @@
 package com.bravisoftware.samples.tictactoe.model;
 
+import java.util.Stack;
+
 public class Game {
 	
+	private static final Mark BLANK = null;
+
 	private final Mark [] grid = new Mark[9];
 	
-	private Move lastMove = Move.EMPTY;
-	private int remainingMoves = 9;
+	private Stack<Move> moves = new Stack<Move>();
 	private boolean over;
 	private GameResult result = GameResult.OPEN;
 
 	public void play(Position position, Mark mark) {
 		validate(position, mark);
-		lastMove = new Move(position, mark);
+		Move move = new Move(position, mark);
 		grid[position.index()] = mark;
-		remainingMoves--;
+		moves.push(move);
 		checkWinnerAndChangeStatus();
 	}
 
@@ -34,8 +37,9 @@ public class Game {
 	}
 
 	private void drawGameIfThereIsNoBlankPositionLeft() {
-		if (over = remainingMoves == 0) {
+		if (moves.size() == 9) {
 			result = GameResult.DRAW;
+			over = true;
 		}
 	}
 
@@ -70,6 +74,16 @@ public class Game {
 		}
 		return over;
 	}
+	
+	public void undo() {
+		validateUndo();
+		resetLastMove();
+	}
+
+	private void resetLastMove() {
+		Move lastMove = moves.pop();
+		grid[lastMove.positionIndex()] = BLANK;
+	}
 
 	private void validate(Position position, Mark mark) {
 		if (this.isOver()) {
@@ -78,8 +92,17 @@ public class Game {
 		if (isFilled(position.index())) {
 			throw new FilledPositionException();
 		}
-		if (lastMove.sameMark(mark)) {
+		if (lastMove().sameMark(mark)) {
 			throw new InvalidPlayerException();
+		}
+	}
+	
+	private void validateUndo() {
+		if (this.isOver()) {
+			throw new GameOverException();
+		}
+		if (moves.empty()) {
+			throw new CannotUndoException();
 		}
 	}
 	
@@ -92,7 +115,7 @@ public class Game {
 	}
 
 	public Move lastMove() {
-		return lastMove;
+		return moves.empty() ? Move.EMPTY : moves.peek();
 	}
 
 	public boolean isOver() {

@@ -135,6 +135,36 @@ public class GameTests {
 		assertThat(game.getResult(), equalTo(GameResult.OPEN));
 	}
 	
+	@Test(expected = CannotUndoException.class)
+	public void should_not_be_able_to_undo_before_the_first_move() throws Exception {
+		game.undo();
+	}
+	
+	@Test
+	public void should_be_able_to_undo_the_first_move() throws Exception {
+		game.play(Position.TopLeftCorner, Mark.X);
+		game.undo();
+		assertThat(game.lastMove(), equalTo(Move.EMPTY));
+	}
+	
+	@Test
+	public void undo_should_undo_last_move_and_reset_to_the_previous_move() throws Exception {
+		game.play(Position.TopLeftCorner, Mark.X);
+		game.play(Position.Center, Mark.O);
+		game.undo();
+		assertTrue(game.lastMove().is(Position.TopLeftCorner, Mark.X));
+	}
+	
+	@Test(expected = GameOverException.class)
+	public void should_not_be_able_undo_when_game_is_over() throws Exception {
+		playInSequence(Position.TopLeftCorner, Position.Center,
+				   Position.TopRightCorner, Position.TopEdge, 
+				   Position.BottonEdge, Position.LeftEdge, 
+				   Position.RightEdge, Position.BottonRightCorner, 
+				   Position.BottonLeftCorner);
+		game.undo();
+	}
+	
 	private void playInSequence(Position... positions) {
 		Mark mark = Mark.X;
 		for (Position position : positions) {

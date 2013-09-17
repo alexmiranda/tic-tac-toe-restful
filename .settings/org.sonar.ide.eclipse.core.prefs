@@ -1,0 +1,7 @@
+analyseLocally=true
+eclipse.preferences.version=1
+extraProperties=sonar.password\=admin\r\nsonar.host.url\=http\://localhost\:9001/sonar\r\nsonar.jdbc.password\=sonar\r\nsonar.jdbc.username\=sonar\r\nsonar.jdbc.url\=jdbc\:mysql\://localhost\:3306/sonar?useUnicode\=true&characterEncoding\=utf8\r\nsonar.login\=admin\r\nsonar.language\=java
+lastAnalysisDate=1379389191835
+projectKey=com.bravisoftware.samples\:tic-tac-toe-restful
+serverUrl=http\://localhost\:9001/sonar
+version=2

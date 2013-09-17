@@ -2,18 +2,25 @@ package com.bravisoftware.samples.tictactoe.model;
 
 public class Game {
 	
+	private final Mark [] grid = new Mark[9];
+	
 	private Move lastMove = Move.EMPTY;
-	private Mark [] grid = new Mark[9];	
+	private int remainingMoves = 9;
 	private boolean over;
 
 	public void play(Position position, Mark mark) {
 		validate(position, mark);
 		lastMove = new Move(position, mark);
 		grid[position.index()] = mark;
+		remainingMoves--;
 		checkWinnerAndChangeStatus();
 	}
 
 	private void checkWinnerAndChangeStatus() {
+		if (remainingMoves == 0) {
+			over = true;
+			return;
+		}
 		checkHorizontalRows();
 		checkVerticalRows();
 		checkDiagonalRows();

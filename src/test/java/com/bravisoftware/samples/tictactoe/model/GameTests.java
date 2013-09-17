@@ -112,6 +112,16 @@ public class GameTests {
 		game.play(Position.TopLeftCorner, Mark.O);
 	}
 	
+	@Test
+	public void game_is_over_when_there_is_no_blank_positions() throws Exception {
+		playInSequence(Position.TopLeftCorner, Position.Center,
+					   Position.TopRightCorner, Position.TopEdge, 
+					   Position.BottonEdge, Position.LeftEdge, 
+					   Position.RightEdge, Position.BottonRightCorner, 
+					   Position.BottonLeftCorner);
+		assertTrue(game.isOver());
+	}
+	
 	private void playInSequence(Position... positions) {
 		Mark mark = Mark.X;
 		for (Position position : positions) {

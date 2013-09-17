@@ -7,6 +7,7 @@ public class Game {
 	private Move lastMove = Move.EMPTY;
 	private int remainingMoves = 9;
 	private boolean over;
+	private GameResult result = GameResult.OPEN;
 
 	public void play(Position position, Mark mark) {
 		validate(position, mark);
@@ -17,38 +18,51 @@ public class Game {
 	}
 
 	private void checkWinnerAndChangeStatus() {
-		if (remainingMoves == 0) {
-			over = true;
+		if (threeInARow()) {
+			determineWinner();
 			return;
 		}
-		checkHorizontalRows();
-		checkVerticalRows();
-		checkDiagonalRows();
+		drawGameIfThereIsNoBlankPositionLeft();
 	}
 
-	private void checkHorizontalRows() {
+	private boolean threeInARow() {
+		return checkHorizontalRows() || checkVerticalRows() || checkDiagonalRows();
+	}
+	
+	private void determineWinner() {
+		result = lastMove().sameMark(Mark.X) ? GameResult.X_WINS : GameResult.O_WINS;
+	}
+
+	private void drawGameIfThereIsNoBlankPositionLeft() {
+		if (over = remainingMoves == 0) {
+			result = GameResult.DRAW;
+		}
+	}
+
+	private boolean checkHorizontalRows() {
 		for (int i = 0; i < grid.length; i = i + 3) {
 			if (check(i, i + 1, i + 2)) {
-				break;
+				return over;
 			}
 		}
+		return false;
 	}
 	
-	private void checkVerticalRows() {
+	private boolean checkVerticalRows() {
 		for (int i = 0; i <= 2; i++) {
 			if (check(i, i + 3, i + 6)) {
-				break;
+				return over;
 			}
 		}
+		return false;
 	}
 	
-	private void checkDiagonalRows() {
-		check(0, 4, 8);
-		check(2, 4, 6);
+	private boolean checkDiagonalRows() {
+		return check(0, 4, 8) || check(2, 4, 6);
 	}
 
 	private boolean check(int first, int second, int third) {
-		if (!isFilled(first) || !isFilled(second) || !isFilled(third)) {
+		if (isEmpty(first) || isEmpty(second) || isEmpty(third)) {
 			return false;
 		}
 		if (grid[first] == grid[second] && grid[second] == grid[third]) {
@@ -61,20 +75,20 @@ public class Game {
 		if (this.isOver()) {
 			throw new GameOverException();
 		}
-		if (isFilled(position)) {
+		if (isFilled(position.index())) {
 			throw new FilledPositionException();
 		}
 		if (lastMove.sameMark(mark)) {
 			throw new InvalidPlayerException();
 		}
 	}
-
-	private boolean isFilled(Position position) {
-		return isFilled(position.index());
-	}
 	
 	private boolean isFilled(int position) {
 		return grid[position] != null;
+	}
+	
+	private boolean isEmpty(int position) {
+		return !isFilled(position);
 	}
 
 	public Move lastMove() {
@@ -83,6 +97,10 @@ public class Game {
 
 	public boolean isOver() {
 		return over;
+	}
+
+	public GameResult getResult() {
+		return result;
 	}
 
 }

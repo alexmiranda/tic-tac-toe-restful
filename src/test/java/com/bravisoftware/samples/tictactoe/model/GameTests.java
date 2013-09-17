@@ -1,6 +1,8 @@
 package com.bravisoftware.samples.tictactoe.model;
 
 import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.CoreMatchers.equalTo;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -54,6 +56,7 @@ public class GameTests {
 				       Position.Center, Position.BottonEdge, 
 				       Position.RightEdge);
 		assertTrue(game.isOver());
+		assertThat(game.getResult(), equalTo(GameResult.X_WINS));
 	}
 	
 	@Test
@@ -62,6 +65,7 @@ public class GameTests {
 					   Position.BottonEdge, Position.TopEdge, 
 					   Position.BottonRightCorner);
 		assertTrue(game.isOver());
+		assertThat(game.getResult(), equalTo(GameResult.X_WINS));
 	}
 	
 	@Test
@@ -78,6 +82,7 @@ public class GameTests {
 				       Position.Center, Position.RightEdge, 
 				       Position.BottonEdge);
 		assertTrue(game.isOver());
+		assertThat(game.getResult(), equalTo(GameResult.X_WINS));
 	}
 	
 	@Test
@@ -86,6 +91,7 @@ public class GameTests {
 				       Position.RightEdge, Position.LeftEdge,  
 				       Position.BottonRightCorner);
 		assertTrue(game.isOver());
+		assertThat(game.getResult(), equalTo(GameResult.X_WINS));
 	}
 	
 	@Test
@@ -102,6 +108,7 @@ public class GameTests {
 				       Position.Center, Position.RightEdge, 
 				       Position.BottonLeftCorner);
 		assertTrue(game.isOver());
+		assertThat(game.getResult(), equalTo(GameResult.X_WINS));
 	}
 	
 	@Test(expected = GameOverException.class)
@@ -120,6 +127,12 @@ public class GameTests {
 					   Position.RightEdge, Position.BottonRightCorner, 
 					   Position.BottonLeftCorner);
 		assertTrue(game.isOver());
+		assertThat(game.getResult(), equalTo(GameResult.DRAW));
+	}
+	
+	@Test
+	public void game_result_is_open_when_game_starts() throws Exception {
+		assertThat(game.getResult(), equalTo(GameResult.OPEN));
 	}
 	
 	private void playInSequence(Position... positions) {

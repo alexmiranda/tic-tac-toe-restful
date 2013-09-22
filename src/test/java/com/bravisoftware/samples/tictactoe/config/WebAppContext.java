@@ -10,7 +10,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @Configuration
 @EnableWebMvc
 @ComponentScan(basePackages = {
-        "com.bravisoftware.samples.tictactoe.controller"
+        "com.bravisoftware.samples.tictactoe.controller",
+        "com.bravisoftware.samples.tictactoe.service",
+        "com.bravisoftware.samples.tictactoe.factory"
 })
 public class WebAppContext extends WebMvcConfigurerAdapter {
 

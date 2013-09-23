@@ -8,10 +8,23 @@ public class Game {
 
 	private final Mark [] grid = new Mark[9];
 	
+	private Long id;
 	private Stack<Move> moves = new Stack<Move>();
 	private boolean over;
 	private GameResult result = GameResult.OPEN;
 
+	public Game(long id) {
+		this.setId(id);
+	}
+	
+	public Long getId() {
+		return id;
+	}
+
+	private void setId(Long id) {
+		this.id = id;
+	}
+	
 	public void play(Position position, Mark mark) {
 		validate(position, mark);
 		Move move = new Move(position, mark);
@@ -125,5 +138,4 @@ public class Game {
 	public GameResult getResult() {
 		return result;
 	}
-
 }

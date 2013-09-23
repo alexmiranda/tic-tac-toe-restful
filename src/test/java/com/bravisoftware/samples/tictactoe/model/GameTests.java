@@ -13,7 +13,7 @@ public class GameTests {
 	
 	@Before
 	public void setup() {
-		game = new Game();
+		game = new Game(1L);
 	}
 
 	@Test

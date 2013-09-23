@@ -1,11 +1,15 @@
 package com.bravisoftware.samples.tictactoe.config;
 
+import java.util.Properties;
+
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 
 @Configuration
 @EnableWebMvc
@@ -26,13 +30,15 @@ public class WebAppContext extends WebMvcConfigurerAdapter {
         configurer.enable();
     }
 
-   /* @Bean
+    @Bean
     public SimpleMappingExceptionResolver exceptionResolver() {
         SimpleMappingExceptionResolver exceptionResolver = new SimpleMappingExceptionResolver();
 
         Properties exceptionMappings = new Properties();
 
-        exceptionMappings.put("net.petrikainulainen.spring.testmvc.todo.exception.TodoNotFoundException", "error/404");
+        exceptionMappings.put("com.bravisoftware.samples.tictactoe.model.InvalidPlayerException", "error/400");
+        exceptionMappings.put("com.bravisoftware.samples.tictactoe.model.FilledPositionException", "error/400");
+        
         exceptionMappings.put("java.lang.Exception", "error/error");
         exceptionMappings.put("java.lang.RuntimeException", "error/error");
 
@@ -41,6 +47,7 @@ public class WebAppContext extends WebMvcConfigurerAdapter {
         Properties statusCodes = new Properties();
 
         statusCodes.put("error/404", "404");
+        statusCodes.put("error/400", "400");
         statusCodes.put("error/error", "500");
 
         exceptionResolver.setStatusCodes(statusCodes);
@@ -48,7 +55,7 @@ public class WebAppContext extends WebMvcConfigurerAdapter {
         return exceptionResolver;
     }
 
-    @Bean
+    /* @Bean
     public ViewResolver viewResolver() {
         InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
 

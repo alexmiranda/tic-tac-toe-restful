@@ -1,8 +1,5 @@
 package com.bravisoftware.samples.tictactoe.resource;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
-
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 
 import com.bravisoftware.samples.tictactoe.controller.GameController;

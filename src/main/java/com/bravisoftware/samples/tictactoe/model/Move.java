@@ -40,4 +40,13 @@ public class Move {
 		}
 		
 	}
+
+	public static Position toPosition(int index) {
+		
+		for (Position position : Position.values()) {
+			if(position.index() == index)
+				return position;
+		}
+		throw new PositionNotFoundException();
+	}
 }

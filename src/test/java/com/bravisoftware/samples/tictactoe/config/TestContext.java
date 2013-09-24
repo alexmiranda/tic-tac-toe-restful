@@ -6,10 +6,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
 
-import com.bravisoftware.samples.tictactoe.factory.GameFactory;
+import com.bravisoftware.samples.tictactoe.component.DefaultGameFactory;
+import com.bravisoftware.samples.tictactoe.model.GameFactory;
+import com.bravisoftware.samples.tictactoe.model.GameRepository;
 import com.bravisoftware.samples.tictactoe.resource.GameResourceAssembler;
-import com.bravisoftware.samples.tictactoe.service.GameService;
-import com.bravisoftware.samples.tictactoe.service.GameServiceBase;
 
 @Configuration
 public class TestContext {
@@ -31,12 +31,12 @@ public class TestContext {
     
     @Bean
     public GameFactory getGameFactory(){
-    	return new GameFactory();
+    	return new DefaultGameFactory();
     }
     
     @Bean
-    public GameService getGameService(){
-    	return Mockito.mock(GameService.class);
+    public GameRepository getGameRepository(){
+    	return Mockito.mock(GameRepository.class);
     }
 
 }

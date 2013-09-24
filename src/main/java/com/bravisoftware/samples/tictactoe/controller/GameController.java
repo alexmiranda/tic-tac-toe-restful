@@ -18,39 +18,41 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.bravisoftware.samples.tictactoe.model.Game;
+import com.bravisoftware.samples.tictactoe.model.GameFactory;
+import com.bravisoftware.samples.tictactoe.model.GameRepository;
 import com.bravisoftware.samples.tictactoe.model.Mark;
 import com.bravisoftware.samples.tictactoe.model.Move;
 import com.bravisoftware.samples.tictactoe.model.Position;
 import com.bravisoftware.samples.tictactoe.resource.GameResource;
 import com.bravisoftware.samples.tictactoe.resource.GameResourceAssembler;
-import com.bravisoftware.samples.tictactoe.service.GameService;
+import com.bravisoftware.samples.tictactoe.service.GameFacade;
 
-@RequestMapping(value = "api/games")
+@RequestMapping(value = "/api/games")
 @Controller
 public class GameController {
 
 	private final GameResourceAssembler gameResourceAssembler;
-	private final GameService service;
+	private final GameFacade gameFacade;
 
 	@Autowired
-	public GameController(GameResourceAssembler gameResourceAssembler, GameService service) {
+	public GameController(GameResourceAssembler gameResourceAssembler, GameFacade gameFacade) {
 		this.gameResourceAssembler = gameResourceAssembler;
-		this.service = service;
+		this.gameFacade = gameFacade;
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<Void> createNewGame() {
 		HttpHeaders headers = new HttpHeaders();
-		Game game = service.createGame();
-		headers.setLocation(linkTo(methodOn(getClass()).getGame(game.getId())).slash(game.getId()).toUri());
+		Long gameId = gameFacade.createNewGame();
+		headers.setLocation(linkTo(methodOn(getClass()).getGame(gameId)).slash(gameId).toUri());
 		return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	@ResponseBody
 	public GameResource getGame(@PathVariable Long id) {
-		Game game = service.getGame(id);
+		Game game = gameFacade.loadGame(id);
 		return gameResourceAssembler.toResource(game);
 	}
 	
@@ -58,14 +60,15 @@ public class GameController {
 	@ResponseStatus(value = HttpStatus.ACCEPTED)
 	@ResponseBody
 	public GameResource play(@PathVariable Long id, @RequestBody MoveDTO dto) {
-		Game game = service.getGame(id);
+		Game game = gameFacade.loadGame(id);
 		game.play(dto.toPosition(), dto.toMark());
 		return gameResourceAssembler.toResource(game);
 	}
 	
-	protected static final class MoveDTO{
+	protected static final class MoveDTO {
 		private int position;
 		private String mark;
+		
 		public MoveDTO(int position, String mark) {
 			this.position = position;
 			this.mark = mark;

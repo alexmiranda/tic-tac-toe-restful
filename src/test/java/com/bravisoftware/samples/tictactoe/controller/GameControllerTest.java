@@ -7,11 +7,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.hamcrest.Matchers.*;
 
 import java.io.IOException;
 
@@ -75,8 +77,7 @@ public class GameControllerTest {
 		mockMvc.perform(post("/api/games"))
 				.andExpect(status().isCreated())
 				.andExpect(
-						header().string("location",
-								Matchers.containsString("/api/games/1")));
+						header().string("location", endsWith("/api/games/1")));
 
 		verify(gameService, times(1)).createGame();
 		verifyNoMoreInteractions(gameService);
@@ -89,6 +90,10 @@ public class GameControllerTest {
 		game.play(Position.BottonEdge, Mark.X);
 
 		when(gameService.getGame(1L)).thenReturn(game);
+		
+		String movePathMatcher = new StringBuilder("/api/games/")
+									.append(game.getId()).append("/moves/")
+									.append(Position.BottonEdge.index()).toString();
 
 		mockMvc.perform(get("/api/games/{0}", 1L))
 				.andExpect(status().isOk())
@@ -96,6 +101,8 @@ public class GameControllerTest {
 				.andExpect(jsonPath("$.links", hasSize(1)))
 				.andExpect(jsonPath("$.status", is("Open")))
 				.andExpect(jsonPath("$.lastMove.mark", is("X")))
+				.andExpect(jsonPath("$.lastMove.links[0].rel", is("undo")))
+				.andExpect(jsonPath("$.lastMove.links[0].href", endsWith(movePathMatcher)))
 				.andExpect(jsonPath("$.lastMove.position", is("7")));
 
 		verify(gameService, times(1)).getGame(game.getId());
@@ -141,6 +148,22 @@ public class GameControllerTest {
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(dto)))
                 .andExpect(status().isBadRequest());
+	}
+	
+	@Test
+	public void should_back_to_previous_move_when_undo_last_move() throws Exception{
+		game.play(Position.BottonEdge, Mark.X);
+		game.play(Position.BottonLeftCorner, Mark.O);
+
+		when(gameService.getGame(1L)).thenReturn(game);
+		
+		mockMvc.perform(delete("/api/games/{0}/moves/{1}", 1L, Position.BottonLeftCorner.index()))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(TestUtil.APPLICATION_JSON_UTF8))
+				.andExpect(jsonPath("$.lastMove.mark", is("X")))
+				.andExpect(jsonPath("$.lastMove.position", is("7")));
+
+		verify(gameService, times(1)).getGame(game.getId());
 	}
 	
 }

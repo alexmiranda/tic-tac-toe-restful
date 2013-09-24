@@ -3,8 +3,6 @@ package com.bravisoftware.samples.tictactoe.controller;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -43,7 +41,7 @@ public class GameController {
 	public ResponseEntity<Void> createNewGame() {
 		HttpHeaders headers = new HttpHeaders();
 		Game game = service.createGame();
-		headers.setLocation(linkTo(methodOn(getClass()).getGame(game.getId())).slash(game.getId()).toUri());
+		headers.setLocation(linkTo(methodOn(getClass()).getGame(game.getId())).toUri());
 		return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
 	}
 
@@ -60,6 +58,14 @@ public class GameController {
 	public GameResource play(@PathVariable Long id, @RequestBody MoveDTO dto) {
 		Game game = service.getGame(id);
 		game.play(dto.toPosition(), dto.toMark());
+		return gameResourceAssembler.toResource(game);
+	}
+	
+	@RequestMapping(value = "/{id}/moves/{moveId}", method = RequestMethod.DELETE)
+	@ResponseBody
+	public GameResource undoMove(@PathVariable Long id, @PathVariable Long moveId) {
+		Game game = service.getGame(id);
+		game.undo();
 		return gameResourceAssembler.toResource(game);
 	}
 	

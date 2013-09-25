@@ -10,7 +10,7 @@ import com.bravisoftware.samples.tictactoe.model.Mark;
 import com.bravisoftware.samples.tictactoe.model.Position;
 
 @Service
-public class DefaultGameFacade implements GameFacade {
+public class GameCenter implements GameFacade {
 
 	@Autowired
 	private GameFactory factory;
@@ -32,12 +32,14 @@ public class DefaultGameFacade implements GameFacade {
 
 	@Override
 	public void play(Long gameId, Position position, Mark mark) {
-		
+		Game game = this.loadGame(gameId);
+		game.play(position, mark);
 	}
 
 	@Override
 	public void undoLastMove(Long gameId) {
-		
+		Game game = this.loadGame(gameId);
+		game.undo();
 	}
 
 }

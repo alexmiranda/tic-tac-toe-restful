@@ -1,13 +1,22 @@
 package com.bravisoftware.samples.tictactoe.model;
 
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jackson.annotate.JsonProperty;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Move {
 	
 	public static final Move EMPTY = new EmptyMove();
 	
+	@JsonProperty("Position")
 	private Position position;
+	
+	@JsonProperty("Mark")
 	private Mark mark;
 
-	public Move(Position position, Mark mark) {
+	@JsonCreator
+	public Move(@JsonProperty("Position") Position position, @JsonProperty("Mark") Mark mark) {
 		this.position = position;
 		this.mark = mark;
 	}
@@ -28,6 +37,14 @@ public class Move {
 		return position.index();
 	}
 	
+	public Position position() {
+		return this.position;
+	}
+	
+	public Mark mark() {
+		return this.mark;
+	}
+	
 	private static class EmptyMove extends Move {
 
 		public EmptyMove() {
@@ -42,7 +59,6 @@ public class Move {
 	}
 
 	public static Position toPosition(int index) {
-		
 		for (Position position : Position.values()) {
 			if(position.index() == index)
 				return position;

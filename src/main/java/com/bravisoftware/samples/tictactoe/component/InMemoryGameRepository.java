@@ -1,6 +1,5 @@
 package com.bravisoftware.samples.tictactoe.component;
 
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Component;
@@ -11,7 +10,7 @@ import com.bravisoftware.samples.tictactoe.model.GameRepository;
 @Component
 public class InMemoryGameRepository implements GameRepository {
 	
-	private Map<Long, Game> games = new ConcurrentHashMap<Long, Game>();
+	private ConcurrentHashMap<Long, Game> games = new ConcurrentHashMap<Long, Game>();
 
 	@Override
 	public Game retrieve(Long id) {
@@ -20,8 +19,7 @@ public class InMemoryGameRepository implements GameRepository {
 
 	@Override
 	public void register(Game game) {
-		// TODO Auto-generated method stub
-		
+		games.putIfAbsent(game.getId(), game);
 	}
 
 }

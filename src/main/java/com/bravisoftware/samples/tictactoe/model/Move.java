@@ -9,14 +9,14 @@ public class Move {
 	
 	public static final Move EMPTY = new EmptyMove();
 	
-	@JsonProperty("Position")
+	@JsonProperty("position")
 	private Position position;
 	
-	@JsonProperty("Mark")
+	@JsonProperty("mark")
 	private Mark mark;
 
 	@JsonCreator
-	public Move(@JsonProperty("Position") Position position, @JsonProperty("Mark") Mark mark) {
+	public Move(@JsonProperty("position") Position position, @JsonProperty("mark") Mark mark) {
 		this.position = position;
 		this.mark = mark;
 	}

@@ -2,7 +2,6 @@ package com.bravisoftware.samples.tictactoe.model;
 
 import static org.junit.Assert.*;
 
-import org.hibernate.param.PositionalParameterSpecification;
 import org.junit.Test;
 
 public class MoveTests {

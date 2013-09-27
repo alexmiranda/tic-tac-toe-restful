@@ -2,8 +2,6 @@ package com.bravisoftware.samples.tictactoe.controller;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -29,6 +27,7 @@ import org.springframework.web.context.WebApplicationContext;
 import com.bravisoftware.samples.tictactoe.config.TestContext;
 import com.bravisoftware.samples.tictactoe.config.WebAppContext;
 import com.bravisoftware.samples.tictactoe.model.Game;
+import com.bravisoftware.samples.tictactoe.model.GameRepository;
 import com.bravisoftware.samples.tictactoe.model.Mark;
 import com.bravisoftware.samples.tictactoe.model.Move;
 import com.bravisoftware.samples.tictactoe.model.Position;
@@ -46,6 +45,9 @@ public class GameControllerTests {
 	private WebApplicationContext webApplicationContext;
 
 	@Autowired
+	private GameRepository gameRepository;
+	
+	@Autowired
 	private GameFacade gameCenter;
 
 	@Autowired
@@ -56,8 +58,12 @@ public class GameControllerTests {
 	@Before
 	public void setUp() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+		forceGameReset();
+	}
+
+	private void forceGameReset() {
 		game = new Game(1L);
-		when(gameCenter.loadGame(eq(1L))).thenReturn(game);
+		gameRepository.register(game);
 	}
 
 	@Test
@@ -82,6 +88,12 @@ public class GameControllerTests {
 				.andExpect(jsonPath("$.lastMove.mark", is("X")))
 				.andExpect(jsonPath("$.lastMove.links[0].rel", is("undo")))
 				.andExpect(jsonPath("$.lastMove.links[0].href", endsWith(movePathMatcher)));
+	}
+	
+	@Test
+	public void get_an_non_existing_game_returns_404() throws Exception {		
+		mockMvc.perform(get("/api/games/{0}", 2L))
+				.andExpect(status().isNotFound());
 	}
 	
 	@Test

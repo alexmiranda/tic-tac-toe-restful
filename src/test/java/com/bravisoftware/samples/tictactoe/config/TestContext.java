@@ -7,9 +7,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
 
 import com.bravisoftware.samples.tictactoe.component.DefaultGameFactory;
+import com.bravisoftware.samples.tictactoe.component.InMemoryGameRepository;
 import com.bravisoftware.samples.tictactoe.model.GameFactory;
 import com.bravisoftware.samples.tictactoe.model.GameRepository;
 import com.bravisoftware.samples.tictactoe.resource.GameResourceAssembler;
+import com.bravisoftware.samples.tictactoe.service.GameFacade;
 
 @Configuration
 public class TestContext {
@@ -36,7 +38,13 @@ public class TestContext {
     
     @Bean
     public GameRepository getGameRepository(){
-    	return Mockito.mock(GameRepository.class);
+    	GameRepository repository = new InMemoryGameRepository();
+    	return repository;
+    }
+    
+    @Bean
+    public GameFacade getGameCenter(){
+    	return Mockito.mock(GameFacade.class);
     }
 
 }

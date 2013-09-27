@@ -19,7 +19,7 @@ public class InMemoryGameRepository implements GameRepository {
 
 	@Override
 	public void register(Game game) {
-		games.putIfAbsent(game.getId(), game);
+		games.put(game.getId(), game);
 	}
 
 }

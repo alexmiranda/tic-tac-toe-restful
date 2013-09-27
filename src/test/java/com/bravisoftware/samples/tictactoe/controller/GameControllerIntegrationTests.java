@@ -42,6 +42,10 @@ import com.bravisoftware.samples.tictactoe.util.IntegrationTest;
 @Category(IntegrationTest.class)
 public class GameControllerIntegrationTests {
 
+	private static final long EXISTING_GAME_ID = 1L;
+	private static final long NON_EXISTING_GAME_ID = 2L;
+	private static final String EXISTING_GAME_URI = "/api/games/1";
+
 	private MockMvc mockMvc;
 
 	@Autowired
@@ -65,7 +69,7 @@ public class GameControllerIntegrationTests {
 	}
 
 	private void forceGameReset() {
-		game = new Game(1L);
+		game = new Game(EXISTING_GAME_ID);
 		gameRepository.register(game);
 	}
 
@@ -73,7 +77,7 @@ public class GameControllerIntegrationTests {
 	public void create_new_game() throws Exception {
 		mockMvc.perform(post("/api/games"))
 				.andExpect(status().isCreated())
-				.andExpect(header().string("location", endsWith("/api/games/1")));
+				.andExpect(header().string("location", endsWith(EXISTING_GAME_URI)));
 	}
 
 	@Test
@@ -82,7 +86,7 @@ public class GameControllerIntegrationTests {
 				
 		String movePathMatcher = String.format("/api/games/%s/lastMove", game.getId().toString());
 
-		mockMvc.perform(get("/api/games/{0}", 1L))
+		mockMvc.perform(get("/api/games/{0}", EXISTING_GAME_ID))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.links", hasSize(1)))
@@ -94,8 +98,8 @@ public class GameControllerIntegrationTests {
 	}
 	
 	@Test
-	public void get_an_non_existing_game_returns_404() throws Exception {		
-		mockMvc.perform(get("/api/games/{0}", 2L))
+	public void get_a_non_existing_game_returns_404() throws Exception {		
+		mockMvc.perform(get("/api/games/{0}", NON_EXISTING_GAME_ID))
 				.andExpect(status().isNotFound());
 	}
 	
@@ -136,7 +140,7 @@ public class GameControllerIntegrationTests {
 		game.play(Position.BottonEdge, Mark.X);
 		game.play(Position.BottonLeftCorner, Mark.O);
 		
-		mockMvc.perform(delete("/api/games/{0}/lastMove", 1L))
+		mockMvc.perform(delete("/api/games/{0}/lastMove", EXISTING_GAME_ID))
 				.andExpect(status().isAccepted());
 	}
 	

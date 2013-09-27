@@ -14,6 +14,7 @@ import static com.bravisoftware.samples.tictactoe.util.TestUtil.convertObjectToJ
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -33,11 +34,13 @@ import com.bravisoftware.samples.tictactoe.model.Move;
 import com.bravisoftware.samples.tictactoe.model.Position;
 import com.bravisoftware.samples.tictactoe.resource.GameResourceAssembler;
 import com.bravisoftware.samples.tictactoe.service.GameFacade;
+import com.bravisoftware.samples.tictactoe.util.IntegrationTest;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { TestContext.class, WebAppContext.class })
 @WebAppConfiguration
-public class GameControllerTests {
+@Category(IntegrationTest.class)
+public class GameControllerIntegrationTests {
 
 	private MockMvc mockMvc;
 

@@ -3,7 +3,7 @@ package com.bravisoftware.samples.tictactoe.model;
 public enum Mark {
 	X {
 		@Override
-		Mark switchMark() {
+		public Mark switchMark() {
 			return Mark.O;
 		}
 		
@@ -14,7 +14,7 @@ public enum Mark {
 		
 	}, O {
 		@Override
-		Mark switchMark() {
+		public Mark switchMark() {
 			return Mark.X;
 		}
 		
@@ -24,6 +24,6 @@ public enum Mark {
 		}
 	};
 	
-	abstract Mark switchMark();
+	public abstract Mark switchMark();
 	
 }

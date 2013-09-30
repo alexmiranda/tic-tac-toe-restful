@@ -58,9 +58,6 @@ public class GameControllerIntegrationTests {
 	
 	@Autowired
 	private GameFacade gameCenter;
-
-	@Autowired
-	private GameResourceAssembler assembler;
 	
 	private Game game;
 

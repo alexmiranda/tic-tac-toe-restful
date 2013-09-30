@@ -9,7 +9,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
 import static com.bravisoftware.samples.tictactoe.util.TestUtil.convertObjectToJsonBytes;
 import static com.bravisoftware.samples.tictactoe.util.GameUtils.completeGameWithDraw;
 import static com.bravisoftware.samples.tictactoe.util.GameUtils.completeGameWithWinner;
@@ -34,7 +33,6 @@ import com.bravisoftware.samples.tictactoe.model.GameRepository;
 import com.bravisoftware.samples.tictactoe.model.Mark;
 import com.bravisoftware.samples.tictactoe.model.Move;
 import com.bravisoftware.samples.tictactoe.model.Position;
-import com.bravisoftware.samples.tictactoe.resource.GameResourceAssembler;
 import com.bravisoftware.samples.tictactoe.service.GameFacade;
 import com.bravisoftware.samples.tictactoe.util.IntegrationTest;
 

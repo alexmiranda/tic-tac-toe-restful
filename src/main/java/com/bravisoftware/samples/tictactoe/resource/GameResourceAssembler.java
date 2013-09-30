@@ -20,13 +20,20 @@ public class GameResourceAssembler extends ResourceAssemblerSupport<Game, GameRe
 
 	@Override
 	public GameResource toResource(Game game) {
-		GameResource resource = createResourceWithId(game.getId(), game);
+		final Long gameId = game.getId();
+		
+		GameResource resource = createResourceWithId(gameId, game);
 		resource.setGame(game);
 		
+		if (!game.isOver()) {
+			Link playLink = linkTo(methodOn(GameController.class).play(gameId, null)).withRel("play");
+			resource.add(playLink);
+		}
+		
 		Move lastMove = game.lastMove();
-		if (lastMove != Move.EMPTY) {
-			Link moveLink = linkTo(methodOn(GameController.class).undoMove(game.getId())).withRel("undo");
-			resource.getLastMove().add(moveLink);
+		if (lastMove != Move.EMPTY && !game.isOver()) {
+			Link moveLink = linkTo(methodOn(GameController.class).undoMove(gameId)).withRel("undo");
+			resource.add(moveLink);
 		}
 		
 		return resource;

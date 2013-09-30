@@ -85,17 +85,17 @@ public class GameControllerIntegrationTests {
 	public void get_an_existing_game() throws Exception {		
 		game.play(Position.BottonEdge, Mark.X);
 				
-		String movePathMatcher = String.format("/api/games/%s/lastMove", game.getId().toString());
+		String lastMoveLink = String.format("/api/games/%s/lastMove", game.getId().toString());
+		String playLink = String.format("/api/games/%s", game.getId().toString());
 
 		mockMvc.perform(get("/api/games/{0}", EXISTING_GAME_ID))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$.links", hasSize(1)))
 				.andExpect(jsonPath("$.status", is("Open")))
+				.andExpect(jsonPath("$.links..[?(@.rel == 'play')][0].href", endsWith(playLink)))
+				.andExpect(jsonPath("$.links..[?(@.rel == 'undo')][0].href", endsWith(lastMoveLink)))
 				.andExpect(jsonPath("$.lastMove.position", is("BottonEdge")))
-				.andExpect(jsonPath("$.lastMove.mark", is("X")))
-				.andExpect(jsonPath("$.lastMove.links[0].rel", is("undo")))
-				.andExpect(jsonPath("$.lastMove.links[0].href", endsWith(movePathMatcher)));
+				.andExpect(jsonPath("$.lastMove.mark", is("X")));
 	}
 	
 	@Test

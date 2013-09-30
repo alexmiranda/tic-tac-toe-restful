@@ -9,7 +9,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 import static com.bravisoftware.samples.tictactoe.util.TestUtil.convertObjectToJsonBytes;
+import static com.bravisoftware.samples.tictactoe.util.GameUtils.completeGameWithDraw;
+import static com.bravisoftware.samples.tictactoe.util.GameUtils.completeGameWithWinner;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -204,4 +207,38 @@ public class GameControllerIntegrationTests {
 				.andExpect(status().isConflict());
 	}
 	
+	@Test
+	public void when_game_is_over_with_a_draw_status_should_be_draw() throws Exception {
+		completeGameWithDraw(game);
+		mockMvc.perform(get("/api/games/{0}", EXISTING_GAME_ID))
+			.andExpect(jsonPath("$.status", is("Draw")));
+	}
+	
+	@Test
+	public void when_game_is_over_with_X_winning_status_should_be_x_wins() throws Exception {
+		completeGameWithWinner(game, Mark.X);
+		mockMvc.perform(get("/api/games/{0}", EXISTING_GAME_ID))
+			.andExpect(jsonPath("$.status", is("X wins")));
+	}
+	
+	@Test
+	public void when_game_is_over_with_nought_winning_status_should_be_x_wins() throws Exception {
+		completeGameWithWinner(game, Mark.O);
+		mockMvc.perform(get("/api/games/{0}", EXISTING_GAME_ID))
+			.andExpect(jsonPath("$.status", is("O wins")));
+	}
+	
+	@Test
+	public void when_game_is_over_it_should_not_contain_link_to_play() throws Exception {
+		completeGameWithDraw(game);
+		mockMvc.perform(get("/api/games/{0}", EXISTING_GAME_ID))
+			.andExpect(jsonPath("$.links..[?(@.rel == 'play')]").doesNotExist());
+	}
+	
+	@Test
+	public void when_game_is_over_it_should_not_contain_link_to_undo() throws Exception {
+		completeGameWithDraw(game);
+		mockMvc.perform(get("/api/games/{0}", EXISTING_GAME_ID))
+			.andExpect(jsonPath("$.links..[?(@.rel == 'undo')]").doesNotExist());
+	}
 }

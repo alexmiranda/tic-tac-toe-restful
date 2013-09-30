@@ -3,6 +3,9 @@ package com.bravisoftware.samples.tictactoe.model;
 import static org.junit.Assert.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static com.bravisoftware.samples.tictactoe.util.GameUtils.completeGameWithDraw;
+import static com.bravisoftware.samples.tictactoe.util.GameUtils.completeGameWithWinner;
+import static com.bravisoftware.samples.tictactoe.util.GameUtils.playInSequence;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -44,7 +47,7 @@ public class GameTests {
 	
 	@Test
 	public void playing_three_in_the_first_horizontal_row_wins_the_game() throws Exception {
-		playInSequence(Position.TopLeftCorner, Position.BottonLeftCorner, 
+		playInSequence(game, Position.TopLeftCorner, Position.BottonLeftCorner, 
 					   Position.TopEdge, Position.BottonEdge, 
 					   Position.TopRightCorner);
 		assertTrue(game.isOver());
@@ -53,7 +56,7 @@ public class GameTests {
 	
 	@Test
 	public void playing_three_in_the_second_horizontal_row_wins_the_game() throws Exception {
-		playInSequence(Mark.O, Position.LeftEdge, Position.BottonLeftCorner, 
+		playInSequence(game, Mark.O, Position.LeftEdge, Position.BottonLeftCorner, 
 				       Position.Center, Position.BottonEdge, 
 				       Position.RightEdge);
 		assertTrue(game.isOver());
@@ -62,7 +65,7 @@ public class GameTests {
 	
 	@Test
 	public void playing_three_in_the_third_horizontal_row_wins_the_game() throws Exception {
-		playInSequence(Position.BottonLeftCorner, Position.TopLeftCorner, 
+		playInSequence(game, Position.BottonLeftCorner, Position.TopLeftCorner, 
 					   Position.BottonEdge, Position.TopEdge, 
 					   Position.BottonRightCorner);
 		assertTrue(game.isOver());
@@ -71,7 +74,7 @@ public class GameTests {
 	
 	@Test
 	public void playing_three_in_the_first_vertical_row_wins_the_game() throws Exception {
-		playInSequence(Mark.O, Position.TopLeftCorner, Position.TopRightCorner, 
+		playInSequence(game, Mark.O, Position.TopLeftCorner, Position.TopRightCorner, 
 					   Position.LeftEdge, Position.RightEdge, 
 					   Position.BottonLeftCorner);
 		assertTrue(game.isOver());
@@ -80,7 +83,7 @@ public class GameTests {
 	
 	@Test
 	public void playing_three_in_the_second_vertical_row_wins_the_game() throws Exception {
-		playInSequence(Position.TopEdge, Position.TopRightCorner, 
+		playInSequence(game, Position.TopEdge, Position.TopRightCorner, 
 				       Position.Center, Position.RightEdge, 
 				       Position.BottonEdge);
 		assertTrue(game.isOver());
@@ -89,7 +92,7 @@ public class GameTests {
 	
 	@Test
 	public void playing_three_in_the_third_vertical_row_wins_the_game() throws Exception {
-		playInSequence(Mark.O, Position.TopRightCorner, Position.TopLeftCorner, 
+		playInSequence(game, Mark.O, Position.TopRightCorner, Position.TopLeftCorner, 
 				       Position.RightEdge, Position.LeftEdge,  
 				       Position.BottonRightCorner);
 		assertTrue(game.isOver());
@@ -98,7 +101,7 @@ public class GameTests {
 	
 	@Test
 	public void playing_three_in_the_first_diagonal_row_wins_the_game() throws Exception {
-		playInSequence(Position.TopLeftCorner, Position.LeftEdge, 
+		playInSequence(game, Position.TopLeftCorner, Position.LeftEdge, 
 					   Position.Center, Position.RightEdge,
 					   Position.BottonRightCorner);
 		assertTrue(game.isOver());
@@ -107,7 +110,7 @@ public class GameTests {
 	
 	@Test
 	public void playing_three_in_the_second_diagonal_row_wins_the_game() throws Exception {
-		playInSequence(Mark.O, Position.TopRightCorner, Position.LeftEdge, 
+		playInSequence(game, Mark.O, Position.TopRightCorner, Position.LeftEdge, 
 				       Position.Center, Position.RightEdge, 
 				       Position.BottonLeftCorner);
 		assertTrue(game.isOver());
@@ -116,13 +119,13 @@ public class GameTests {
 	
 	@Test(expected = GameOverException.class)
 	public void cannot_play_when_game_is_over() throws Exception {
-		completeGameWithWinner(Mark.X);
+		completeGameWithWinner(game, Mark.X);
 		game.play(Position.TopLeftCorner, Mark.O);
 	}
 	
 	@Test
 	public void game_is_over_when_there_is_no_blank_positions() throws Exception {
-		completeGameWithDraw();
+		completeGameWithDraw(game);
 		assertTrue(game.isOver());
 		assertThat(game.getResult(), equalTo(GameResult.DRAW));
 	}
@@ -154,35 +157,7 @@ public class GameTests {
 	
 	@Test(expected = GameOverException.class)
 	public void should_not_be_able_undo_when_game_is_over() throws Exception {
-		completeGameWithDraw();
+		completeGameWithDraw(game);
 		game.undo();
-	}
-	
-	private void completeGameWithDraw() {
-		playInSequence(Position.TopLeftCorner, Position.Center,
-				   Position.TopRightCorner, Position.TopEdge, 
-				   Position.BottonEdge, Position.LeftEdge, 
-				   Position.RightEdge, Position.BottonRightCorner,
-				   Position.BottonLeftCorner);		
-	}
-	
-	private void completeGameWithWinner(Mark expectedWinner) {
-		playInSequence(expectedWinner, 
-				   Position.TopLeftCorner, Position.Center,
-				   Position.TopRightCorner, Position.TopEdge, 
-				   Position.BottonEdge, Position.LeftEdge, 
-				   Position.RightEdge, Position.BottonLeftCorner, 
-				   Position.BottonRightCorner);
-	}
-	
-	private void playInSequence(Position... positions) {
-		playInSequence(Mark.X, positions);
-	}
-	
-	private void playInSequence(Mark mark, Position... positions) {
-		for (Position position : positions) {
-			game.play(position, mark);
-			mark = mark.switchMark();
-		}
 	}
 }

@@ -1,6 +1,5 @@
 package com.bravisoftware.samples.tictactoe.controller;
 
-import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -10,7 +9,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
 import static com.bravisoftware.samples.tictactoe.util.TestUtil.convertObjectToJsonBytes;
 
 import org.junit.Before;
@@ -82,32 +80,64 @@ public class GameControllerIntegrationTests {
 	}
 
 	@Test
-	public void get_an_existing_game() throws Exception {		
-		game.play(Position.BottonEdge, Mark.X);
-				
-		String lastMoveLink = String.format("/api/games/%s/lastMove", game.getId().toString());
-		String playLink = String.format("/api/games/%s", game.getId().toString());
-
+	public void getting_a_brand_new_game_returns_ok() throws Exception {
 		mockMvc.perform(get("/api/games/{0}", EXISTING_GAME_ID))
 				.andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$.status", is("Open")))
-				.andExpect(jsonPath("$.links..[?(@.rel == 'play')][0].href", endsWith(playLink)))
-				.andExpect(jsonPath("$.links..[?(@.rel == 'undo')][0].href", endsWith(lastMoveLink)))
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON));
+	}
+	
+	@Test
+	public void new_game_returns_correct_status_in_response_body() throws Exception {
+		mockMvc.perform(get("/api/games/{0}", EXISTING_GAME_ID))
+				.andExpect(jsonPath("$.status", is("Open")));
+	}
+	
+	@Test
+	public void new_game_constains_link_to_itself() throws Exception {
+		String selfLink = String.format("/api/games/%s", game.getId().toString());
+		mockMvc.perform(get("/api/games/{0}", EXISTING_GAME_ID))
+				.andExpect(jsonPath("$.links..[?(@.rel == 'self')][0].href", endsWith(selfLink)));
+	}
+	
+	@Test
+	public void new_game_constains_link_to_play() throws Exception {
+		String playLink = String.format("/api/games/%s", game.getId().toString());
+		mockMvc.perform(get("/api/games/{0}", EXISTING_GAME_ID))
+				.andExpect(jsonPath("$.links..[?(@.rel == 'play')][0].href", endsWith(playLink)));
+	}
+	
+	@Test
+	public void new_game_does_not_constain_link_to_undo() throws Exception {
+		mockMvc.perform(get("/api/games/{0}", EXISTING_GAME_ID))
+				.andExpect(jsonPath("$.links..[?(@.rel == 'undo')]").doesNotExist());
+	}
+	
+	@Test
+	public void game_in_progress_has_last_move_specified_in_body() throws Exception {
+		game.play(Position.BottonEdge, Mark.X);	
+		mockMvc.perform(get("/api/games/{0}", EXISTING_GAME_ID))
 				.andExpect(jsonPath("$.lastMove.position", is("BottonEdge")))
 				.andExpect(jsonPath("$.lastMove.mark", is("X")));
 	}
 	
 	@Test
+	public void game_in_progress_has_self_play_and_undo_links() throws Exception {
+		game.play(Position.TopLeftCorner, Mark.X);
+		mockMvc.perform(get("/api/games/{0}", EXISTING_GAME_ID))
+				.andExpect(jsonPath("$.links..rel", containsInAnyOrder("self", "play", "undo")));
+	}
+	
+	@Test
 	public void get_a_non_existing_game_returns_404_not_found() throws Exception {		
 		mockMvc.perform(get("/api/games/{0}", NON_EXISTING_GAME_ID))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isNotFound())
+				.andExpect(jsonPath("$.status", is("404")))
+				.andExpect(jsonPath("$.reason").exists());
 	}
 	
 	@Test
 	public void should_play_and_return_status_ok() throws Exception {
 		Move move = new Move(Position.TopLeftCorner, Mark.X);
-		
 		mockMvc.perform(post("/api/games/{0}", game.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(convertObjectToJsonBytes(move)))
@@ -124,7 +154,7 @@ public class GameControllerIntegrationTests {
 	}
 	
 	@Test
-	public void cannot_play_without_passing_the_position_and_returns_400_badrequest() throws Exception {		
+	public void cannot_play_without_passing_the_position_and_returns_400_bad_request() throws Exception {		
 		final String content = "{ mark: 'X' }";
 		mockMvc.perform(post("/api/games/{0}", game.getId())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -145,7 +175,6 @@ public class GameControllerIntegrationTests {
 	public void should_return_409_conflict_status_when_invalid_player() throws Exception {		
 		game.play(Position.TopLeftCorner, Mark.X);
 		Move move = new Move(Position.Center, Mark.X);
-		
 		mockMvc.perform(post("/api/games/{0}", game.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(convertObjectToJsonBytes(move)))
@@ -153,10 +182,9 @@ public class GameControllerIntegrationTests {
 	}
 	
 	@Test
-	public void should_return_409_conflict_status_when_filled_position_played_again() throws Exception {
+	public void should_return_409_conflict_status_when_filled_position_is_played() throws Exception {
 		game.play(Position.TopLeftCorner, Mark.X);
 		Move move = new Move(Position.TopLeftCorner, Mark.O);
-		
 		mockMvc.perform(post("/api/games/{0}", game.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(convertObjectToJsonBytes(move)))
@@ -164,9 +192,8 @@ public class GameControllerIntegrationTests {
 	}
 	
 	@Test
-	public void deleting_the_last_move_returns_200_if_the_games_has_at_least_one_move() throws Exception {
+	public void deleting_the_last_move_returns_200_if_the_game_is_in_progress() throws Exception {
 		game.play(Position.BottonEdge, Mark.X);
-		
 		mockMvc.perform(delete("/api/games/{0}/lastMove", EXISTING_GAME_ID))
 				.andExpect(status().isOk());
 	}

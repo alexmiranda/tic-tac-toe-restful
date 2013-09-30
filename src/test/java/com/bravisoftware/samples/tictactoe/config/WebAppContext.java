@@ -35,9 +35,6 @@ public class WebAppContext extends WebMvcConfigurerAdapter {
         SimpleMappingExceptionResolver exceptionResolver = new SimpleMappingExceptionResolver();
 
         Properties exceptionMappings = new Properties();
-
-        exceptionMappings.put("com.bravisoftware.samples.tictactoe.model.InvalidPlayerException", "error/400");
-        exceptionMappings.put("com.bravisoftware.samples.tictactoe.model.FilledPositionException", "error/400");
         
         exceptionMappings.put("java.lang.Exception", "error/error");
         exceptionMappings.put("java.lang.RuntimeException", "error/error");
@@ -55,14 +52,4 @@ public class WebAppContext extends WebMvcConfigurerAdapter {
         return exceptionResolver;
     }
 
-    /* @Bean
-    public ViewResolver viewResolver() {
-        InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
-
-        viewResolver.setViewClass(JstlView.class);
-        viewResolver.setPrefix("/WEB-INF/jsp/");
-        viewResolver.setSuffix(".jsp");
-
-        return viewResolver;
-    }*/
 }

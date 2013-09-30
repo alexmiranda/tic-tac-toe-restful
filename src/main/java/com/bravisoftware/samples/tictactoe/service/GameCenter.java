@@ -37,6 +37,7 @@ public class GameCenter implements GameFacade {
 
 	@Override
 	public void play(Long gameId, Position position, Mark mark) {
+		validate(position, mark);
 		Game game = this.loadGame(gameId);
 		game.play(position, mark);
 	}
@@ -45,6 +46,15 @@ public class GameCenter implements GameFacade {
 	public void undoLastMove(Long gameId) {
 		Game game = this.loadGame(gameId);
 		game.undo();
+	}
+	
+	private void validate(Position position, Mark mark) {
+		if (position == null) {
+			throw new IllegalArgumentException("position");
+		}
+		if (mark == null) {
+			throw new IllegalArgumentException("mark");
+		}
 	}
 
 }

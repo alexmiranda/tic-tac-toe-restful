@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 import static com.bravisoftware.samples.tictactoe.util.TestUtil.convertObjectToJsonBytes;
 
 import org.junit.Before;
@@ -98,50 +99,82 @@ public class GameControllerIntegrationTests {
 	}
 	
 	@Test
-	public void get_a_non_existing_game_returns_404() throws Exception {		
+	public void get_a_non_existing_game_returns_404_not_found() throws Exception {		
 		mockMvc.perform(get("/api/games/{0}", NON_EXISTING_GAME_ID))
 				.andExpect(status().isNotFound());
 	}
 	
 	@Test
-	public void should_play_and_return_status_accepted() throws Exception {
+	public void should_play_and_return_status_ok() throws Exception {
 		Move move = new Move(Position.TopLeftCorner, Mark.X);
 		
 		mockMvc.perform(post("/api/games/{0}", game.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(convertObjectToJsonBytes(move)))
-                .andExpect(status().isAccepted());
+                .andExpect(status().isOk());
 	}
 	
 	@Test
-	public void should_return_400_status_when_invalid_player() throws Exception {		
-		game.play(Position.TopLeftCorner, Mark.X);
-		Move move = new Move(Position.TopLeftCorner, Mark.X);
-		
+	public void cannot_play_with_empty_json_string_and_returns_400_bad_request() throws Exception {		
+		final String content = "{}";
 		mockMvc.perform(post("/api/games/{0}", game.getId())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(convertObjectToJsonBytes(move)))
+                .content(content))
                 .andExpect(status().isBadRequest());
 	}
 	
 	@Test
-	public void should_return_400_status_when_filled_position_played_again() throws Exception {
+	public void cannot_play_without_passing_the_position_and_returns_400_badrequest() throws Exception {		
+		final String content = "{ mark: 'X' }";
+		mockMvc.perform(post("/api/games/{0}", game.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content))
+                .andExpect(status().isBadRequest());
+	}
+	
+	@Test
+	public void cannot_play_without_passing_the_mark_and_returns_400_bad_request() throws Exception {		
+		final String content = "{ position: 'TopLeftCorner' }";
+		mockMvc.perform(post("/api/games/{0}", game.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content))
+                .andExpect(status().isBadRequest());
+	}
+	
+	@Test
+	public void should_return_409_conflict_status_when_invalid_player() throws Exception {		
+		game.play(Position.TopLeftCorner, Mark.X);
+		Move move = new Move(Position.Center, Mark.X);
+		
+		mockMvc.perform(post("/api/games/{0}", game.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(convertObjectToJsonBytes(move)))
+                .andExpect(status().isConflict());
+	}
+	
+	@Test
+	public void should_return_409_conflict_status_when_filled_position_played_again() throws Exception {
 		game.play(Position.TopLeftCorner, Mark.X);
 		Move move = new Move(Position.TopLeftCorner, Mark.O);
 		
 		mockMvc.perform(post("/api/games/{0}", game.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(convertObjectToJsonBytes(move)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isConflict());
 	}
 	
 	@Test
-	public void should_back_to_previous_move_when_undo_last_move() throws Exception {
+	public void deleting_the_last_move_returns_200_if_the_games_has_at_least_one_move() throws Exception {
 		game.play(Position.BottonEdge, Mark.X);
-		game.play(Position.BottonLeftCorner, Mark.O);
 		
 		mockMvc.perform(delete("/api/games/{0}/lastMove", EXISTING_GAME_ID))
-				.andExpect(status().isAccepted());
+				.andExpect(status().isOk());
+	}
+	
+	@Test
+	public void cannot_undo_last_move_if_there_is_no_moves_and_returns_409_conflict() throws Exception {
+		mockMvc.perform(delete("/api/games/{0}/lastMove", EXISTING_GAME_ID))
+				.andExpect(status().isConflict());
 	}
 	
 }

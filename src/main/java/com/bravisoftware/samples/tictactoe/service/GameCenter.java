@@ -7,6 +7,7 @@ import com.bravisoftware.samples.tictactoe.model.Game;
 import com.bravisoftware.samples.tictactoe.model.GameFactory;
 import com.bravisoftware.samples.tictactoe.model.GameNotFoundException;
 import com.bravisoftware.samples.tictactoe.model.GameRepository;
+import com.bravisoftware.samples.tictactoe.model.GameStatus;
 import com.bravisoftware.samples.tictactoe.model.Mark;
 import com.bravisoftware.samples.tictactoe.model.Position;
 
@@ -46,6 +47,11 @@ public class GameCenter implements GameFacade {
 	public void undoLastMove(Long gameId) {
 		Game game = this.loadGame(gameId);
 		game.undo();
+	}
+	
+	public void changeStatus(Long gameId, GameStatus status) {
+		Game game = this.loadGame(gameId);
+		game.setStatus(status);
 	}
 	
 	private void validate(Position position, Mark mark) {

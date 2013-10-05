@@ -63,6 +63,13 @@ public class GameController {
 		gameCenter.play(gameId, move.position(), move.mark());
 		return new ResponseEntity<Void>(HttpStatus.OK);
 	}
+	
+	@RequestMapping(value = "/{gameId}", method = RequestMethod.PUT)
+	@ResponseBody
+	public ResponseEntity<Void> changeStatus(@PathVariable Long gameId, @RequestBody Game game) {
+		gameCenter.changeStatus(gameId, game.getStatus());
+		return new ResponseEntity<Void>(HttpStatus.OK);
+	}
 
 	@RequestMapping(value = "/{gameId}/lastMove", method = RequestMethod.DELETE)
 	@ResponseBody

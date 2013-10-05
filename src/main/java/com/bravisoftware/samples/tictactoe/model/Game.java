@@ -2,18 +2,32 @@ package com.bravisoftware.samples.tictactoe.model;
 
 import java.util.Stack;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
+
 public class Game {
 	
 	private static final Mark BLANK = null;
 
+	@JsonIgnore
 	private final Mark [] grid = new Mark[9];
 	
+	@JsonIgnore
 	private Long id;
+	
+	@JsonIgnore
 	private Stack<Move> moves = new Stack<Move>();
-	private boolean over;
+	
+	@JsonProperty(value = "status")
+	private GameStatus status;
+	
+	@JsonIgnore
 	private GameResult result = GameResult.OPEN;
 
+	public Game() { }
+	
 	public Game(long id) {
+		this();
 		this.setId(id);
 	}
 	
@@ -52,14 +66,14 @@ public class Game {
 	private void drawGameIfThereIsNoBlankPositionLeft() {
 		if (moves.size() == 9) {
 			result = GameResult.DRAW;
-			over = true;
+			status = GameStatus.OVER;
 		}
 	}
 
 	private boolean checkHorizontalRows() {
 		for (int i = 0; i < grid.length; i = i + 3) {
 			if (check(i, i + 1, i + 2)) {
-				return over;
+				return status == GameStatus.OVER;
 			}
 		}
 		return false;
@@ -68,7 +82,7 @@ public class Game {
 	private boolean checkVerticalRows() {
 		for (int i = 0; i <= 2; i++) {
 			if (check(i, i + 3, i + 6)) {
-				return over;
+				return status == GameStatus.OVER;
 			}
 		}
 		return false;
@@ -83,9 +97,9 @@ public class Game {
 			return false;
 		}
 		if (grid[first] == grid[second] && grid[second] == grid[third]) {
-			over = true;
+			this.status = GameStatus.OVER;
 		}
-		return over;
+		return status == GameStatus.OVER;
 	}
 	
 	public void undo() {
@@ -132,10 +146,25 @@ public class Game {
 	}
 
 	public boolean isOver() {
-		return over;
+		return status == GameStatus.OVER;
 	}
 
 	public GameResult getResult() {
 		return result;
+	}
+	
+	public GameStatus getStatus() {
+		return this.status;
+	}
+	
+	public void setStatus(GameStatus status) {
+		if (isOver() && status != GameStatus.OVER) {
+			throw new GameOverException();
+		}
+		
+		this.status = status;
+		if (status == GameStatus.OVER) {
+			this.result = GameResult.DRAW;
+		}	
 	}
 }

@@ -1,0 +1,11 @@
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: net.alexmiranda.experimental.tictactoe.migration
+recipeList:
+  - org.openrewrite.maven.AddProperty:
+      key: maven.compiler.source
+      value: 17
+  - org.openrewrite.maven.AddProperty:
+      key: maven.compiler.target
+      value: 17
+  - org.openrewrite.java.migrate.UpgradeToJava17

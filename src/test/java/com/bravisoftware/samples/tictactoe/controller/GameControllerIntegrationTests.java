@@ -92,14 +92,14 @@ public class GameControllerIntegrationTests {
 	
 	@Test
 	public void new_game_constains_link_to_itself() throws Exception {
-		String selfLink = String.format("/api/games/%s", game.getId().toString());
+		String selfLink = "/api/games/%s".formatted(game.getId().toString());
 		mockMvc.perform(get("/api/games/{0}", EXISTING_GAME_ID))
 				.andExpect(jsonPath("$.links..[?(@.rel == 'self')][0].href", endsWith(selfLink)));
 	}
 	
 	@Test
 	public void new_game_constains_link_to_play() throws Exception {
-		String playLink = String.format("/api/games/%s", game.getId().toString());
+		String playLink = "/api/games/%s".formatted(game.getId().toString());
 		mockMvc.perform(get("/api/games/{0}", EXISTING_GAME_ID))
 				.andExpect(jsonPath("$.links..[?(@.rel == 'play')][0].href", endsWith(playLink)));
 	}

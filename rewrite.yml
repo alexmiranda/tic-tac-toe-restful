@@ -21,3 +21,4 @@ recipeList:
       artifactId: maven-failsafe-plugin
       newVersion: 3.1.2
   - org.openrewrite.java.migrate.UpgradeToJava17
+  - org.openrewrite.java.spring.framework.UpgradeSpringFramework_5_3

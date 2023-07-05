@@ -22,3 +22,4 @@ recipeList:
       newVersion: 3.1.2
   - org.openrewrite.java.migrate.UpgradeToJava17
   - org.openrewrite.java.spring.framework.UpgradeSpringFramework_5_3
+  - org.openrewrite.java.testing.mockito.Mockito1to4Migration

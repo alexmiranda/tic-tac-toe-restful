@@ -1,8 +1,8 @@
 package com.bravisoftware.samples.tictactoe.factory;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.bravisoftware.samples.tictactoe.component.DefaultGameFactory;
 import com.bravisoftware.samples.tictactoe.model.Game;
@@ -12,21 +12,21 @@ public class DefaultGameFactoryTests {
 	
 	private GameFactory factory;
 	
-	@Before
+	@BeforeEach
 	public void setUp() {
 		factory = new DefaultGameFactory();
 	}
-	
+
 	@Test
-	public void should_create_a_first_game_with_id_one() {
+	void should_create_a_first_game_with_id_one() {
 		Game game = factory.newGame();
-		Assert.assertEquals(game.getId(), Long.valueOf(1));
+		Assertions.assertEquals(game.getId(), Long.valueOf(1));
 	}
-	
+
 	@Test
-	public void should_create_a_second_game_with_id_two() {
+	void should_create_a_second_game_with_id_two() {
 		factory.newGame();
 		Game game = factory.newGame();
-		Assert.assertEquals(game.getId(), Long.valueOf(2));
+		Assertions.assertEquals(game.getId(), Long.valueOf(2));
 	}
 }

@@ -1,50 +1,50 @@
 package com.bravisoftware.samples.tictactoe.model;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class MoveTests {
-	
+
 	@Test
-	public void should_be_the_same_position() throws Exception {
+	void should_be_the_same_position() throws Exception {
 		Move move = new Move(Position.TopLeftCorner, Mark.X);
 		assertTrue(move.samePosition(Position.TopLeftCorner));
 	}
-	
+
 	@Test
-	public void should_not_be_the_same_position() throws Exception {
+	void should_not_be_the_same_position() throws Exception {
 		Move move = new Move(Position.TopLeftCorner, Mark.X);
 		assertFalse(move.samePosition(Position.Center));
 	}
-	
+
 	@Test
-	public void should_be_the_same_mark() throws Exception {
+	void should_be_the_same_mark() throws Exception {
 		Move move = new Move(Position.TopLeftCorner, Mark.X);
 		assertTrue(move.sameMark(Mark.X));
 	}
-	
+
 	@Test
-	public void should_not_be_the_same_mark() throws Exception {
+	void should_not_be_the_same_mark() throws Exception {
 		Move move = new Move(Position.TopLeftCorner, Mark.X);
 		assertFalse(move.sameMark(Mark.O));
 	}
-	
+
 	@Test
-	public void should_return_true_if_the_position_and_mark_are_equal() throws Exception {
+	void should_return_true_if_the_position_and_mark_are_equal() throws Exception {
 		Move move = new Move(Position.TopLeftCorner, Mark.X);
 		assertTrue(move.is(Position.TopLeftCorner, Mark.X));
 	}
-	
+
 	@Test
-	public void should_return_false_if_either_position_or_mark_is_different() throws Exception {
+	void should_return_false_if_either_position_or_mark_is_different() throws Exception {
 		Move move = new Move(Position.TopLeftCorner, Mark.X);
 		assertFalse(move.is(Position.TopLeftCorner, Mark.O));
 		assertFalse(move.is(Position.TopRightCorner, Mark.X));
 	}
-	
+
 	@Test
-	public void should_return_correct_position(){
+	void should_return_correct_position(){
 		Position topLeftCorner = Move.toPosition(Position.TopLeftCorner.index());
 		Position topEdge = Move.toPosition(Position.TopEdge.index());
 		Position topRightCorner = Move.toPosition(Position.TopRightCorner.index());
@@ -66,10 +66,12 @@ public class MoveTests {
 		assertTrue(Position.BottonEdge.equals(bottonEdge));
 		assertTrue(Position.BottonRightCorner.equals(bottonRightCorner));
 	}
-	
-	@Test(expected = PositionNotFoundException.class)
-	public void should_throw_exception_when_position_not_found(){
-		Move.toPosition(-100);
+
+	@Test
+	void should_throw_exception_when_position_not_found(){
+		assertThrows(PositionNotFoundException.class, () -> {
+			Move.toPosition(-100);
+		});
 	}
 
 }

@@ -23,3 +23,15 @@ recipeList:
   - org.openrewrite.java.migrate.UpgradeToJava17
   - org.openrewrite.java.spring.framework.UpgradeSpringFramework_5_3
   - org.openrewrite.java.testing.mockito.Mockito1to4Migration
+  - org.openrewrite.java.testing.junit5.JUnit4to5Migration
+  - org.openrewrite.maven.RemoveProperty:
+      propertyName: junit.version
+  - org.openrewrite.maven.ChangePluginGroupIdAndArtifactId:
+      oldGroupId: javax.servlet
+      oldArtifactId: servlet-api
+      newGroupId: javax.servlet
+      newArtifactId: javax.servlet-api
+  - org.openrewrite.maven.ChangePropertyValue:
+      key: servlet.version
+      newValue: 3.1.0
+      addIfMissing: true

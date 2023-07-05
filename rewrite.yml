@@ -8,4 +8,16 @@ recipeList:
   - org.openrewrite.maven.AddProperty:
       key: maven.compiler.target
       value: 17
+  - org.openrewrite.maven.UpgradePluginVersion:
+      groupId: org.apache.maven.plugins
+      artifactId: maven-compiler-plugin
+      newVersion: 3.11.0
+  - org.openrewrite.maven.UpgradePluginVersion:
+      groupId: org.apache.maven.plugins
+      artifactId: maven-surefire-plugin
+      newVersion: 3.1.2
+  - org.openrewrite.maven.UpgradePluginVersion:
+      groupId: org.apache.maven.plugins
+      artifactId: maven-failsafe-plugin
+      newVersion: 3.1.2
   - org.openrewrite.java.migrate.UpgradeToJava17
